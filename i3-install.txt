@@ -1,0 +1,89 @@
+#磁盘分区
+##fdisk /dev/sda
+#	bios 启动（大于512m） “/”,“swap”
+# 	mksf.ext4 /dev/sda? (根目录分区)
+#	mkswap /dev/sda? (交换分区)
+#	swapon /dev/sda?
+
+mount /dev/sda? /mnt
+
+pacstrap -i /mnt base base-devel linux linux-firmware
+
+genfstab -U /mnt >> /mnt/etc/fstab
+
+arch-chroot /mnt
+
+passwd
+
+useradd -m arch
+
+passwd arch
+
+pacman -Syyu
+
+pacman -S vim dhcpcd sudo
+
+systemctl enable dhcpcd
+
+vim /etc/sudoers(添加用户进ALL)
+
+pacman -S grub
+
+grub-install /dev/sda
+
+grub-mkconfig -o /boot/grub/grub.cfg
+
+pacman -S wqy-zenhei ttf-dejavu
+
+vim /etc/locale.gen
+
+#	zh_CN.UTF-8
+
+pacman -S fcitx fcitx-im fcitx-configtool
+
+pacman -S fcitx-libpinyin(sunpinyin)
+
+vim ~/.xprofile
+
+#.bashrc: 每次终端时读取并运用里面的设置
+#.profile：每次启动系统的读取并运用里面的配置
+#.xinitrc: 每次startx启动X界面时读取并运用里面的设置
+#.xprofile: 每次使用lightdm等图形登录管理器时读取并运用里面的设置
+
+#export GTK_IM_MODULE=fcitx
+#export QT_IM_MODULE=fcitx
+#export XMODIFIERS="@im=fcitx"
+
+
+#zsh
+pacman -S zsh
+
+chsh
+
+/bin/zsh
+
+pacman -S git
+
+git clone git://github.com/robbyrussell/oh-my-zsh.git ~/.oh-my-zsh
+
+cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
+
+
+#设置窗口边框
+new_window none
+new_float normal
+hide_edge_borders both
+
+#设置窗口间距
+gaps inner 4
+gaps outer 3
+
+#compton
+exec_always --no-startup-id compton -b
+#compton设置参数：~/.config/compton.conf
+##inactive-opacity = 0.6;
+##active-opacity = 0.6;
+##focus-exclude = "x=0 && y=0 && override_reditect = true";(dmenu不透明)
+
+#feh
+feh --randomize --bg-max(fill-拉伸，center-角落，max-最大，tile-平铺) file
